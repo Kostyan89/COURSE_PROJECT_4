@@ -24,7 +24,7 @@ class Warrior(Personage):
     skill: Skill = ferocious_kick
 
 
-class Thief(Personage):
+class Robber(Personage):
     name: str = 'Вор'
     max_health: float = 50.0
     max_stamina: float = 25.0
@@ -36,5 +36,5 @@ class Thief(Personage):
 
 personage_classes: Dict[str, Type[Personage]] = {
     Warrior.name: Warrior,
-    Thief.name: Thief,
+    Robber.name: Robber,
 }

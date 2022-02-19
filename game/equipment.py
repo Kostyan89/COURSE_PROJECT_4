@@ -22,8 +22,8 @@ class Weapon:
 class Armor:
     id: int
     name: str
-    defence: 0
-    stamina_per_turn: 0
+    defence: float
+    stamina_per_turn: float
 
 
 @dataclass

@@ -70,21 +70,24 @@ def choose_enemy():
         armor=EQUIPMENT.get_armor(request.form['armor']),
         name=request.form['name']
     )
-    return redirect(url_for('index'))
+    if 'player' in heroes and 'enemy' in heroes:
+        game.run(**heroes)
+        return render_template('fight.html', heroes=heroes, result="Fight!")
+    #return redirect(url_for('fight'))
 
 
-@app.route('/fight')
+'''@app.route('/fight')
 def start_fight():
     if 'player' in heroes and 'enemy' in heroes:
         game.run(**heroes)
         return render_template('fight.html', heroes=heroes, result="Fight!")
-    return redirect(url_for('index'))
+    return redirect(url_for('index'))'''
 
 
 @app.route('/fight/hit')
 @game_processing
 def hit():
-     return render_template('fight.html', heroes=heroes, result=game.player_hit())
+    return render_template('fight.html', heroes=heroes, result=game.player_hit())
 
 
 @app.route('/fight/use-skill')
@@ -102,4 +105,6 @@ def pass_turn():
 @app.route('/fight/end-fight')
 def end_fight():
     return redirect(url_for('index'))
+
+app.run()
 

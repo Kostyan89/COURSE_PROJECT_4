@@ -39,18 +39,20 @@ class Hero(ABC):
 
     @property
     def _total_armor(self) -> float:
-        if self.stamina - self.armor.stamina_per_turn >= 0:
+        if self.stamina >= self.armor.stamina_per_turn:
+            self.stamina -= self.armor.stamina_per_turn
             return self.armor.defence * self.class_.armor
         return 0
 
     def _hit(self, target: Hero) -> Optional[float]:
-        if self.stamina - self.weapon.stamina_per_hit < 0:
+        if self.stamina < self.weapon.stamina_per_hit:
             return None
         hero_damage = self.weapon.damage * self.class_.attack
         dealt_damage = hero_damage - target._total_armor
+        self.stamina -= self.weapon.stamina_per_hit
         if dealt_damage < 0:
             return 0
-        self.stamina -= self.weapon.stamina_per_hit
+
         return round(dealt_damage, 1)
 
     def take_hit(self, damage: float):
@@ -73,14 +75,14 @@ class Hero(ABC):
 
     @abstractmethod
     def hit(self, target: Hero) -> Optional[float]:
-        ...
+        pass
 
 
 class Enemy(Hero):
-    def _hit(self, target: Hero) -> Optional[float]:
-        if random.randint(0, 100) < 10 and self.stamina >= self.class_.skill.stamina and not self.skill_used:
+    def hit(self, target: Hero) -> Optional[float]:
+        if random.randint(1, 100) < 11 and self.stamina >= self.class_.skill.stamina and not self.skill_used:
             self.use_skill()
-        return self.hit(target)
+        return self._hit(target)
 
 
 class Player(Hero):
