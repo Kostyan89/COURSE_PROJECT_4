@@ -1,6 +1,8 @@
-from dataclasses import dataclass
+
 from random import uniform
 from typing import List
+
+from marshmallow_dataclass import dataclass
 
 
 @dataclass
