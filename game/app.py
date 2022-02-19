@@ -55,7 +55,7 @@ def choose_enemy():
         armor=EQUIPMENT.get_armor(request.form['armor']),
         name=request.form['name']
     )
-    return '<h2>Not Implemented</h2>'
+    return redirect(url_for('index'))
 
 
 @app.route('/fight')
