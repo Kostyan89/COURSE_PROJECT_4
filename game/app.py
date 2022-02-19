@@ -1,11 +1,17 @@
+from typing import Dict, Type
+
 from flask import Flask, render_template, request, redirect, url_for
 
 from game.equipment import EquipmentData
+from game.hero import Player, Hero, Enemy
 from game.personages import personage_classes
 from game.utils import load_equipment
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+heroes: Dict[str, Hero] = dict()
+
 
 EQUIPMENT: EquipmentData = load_equipment()
 
@@ -28,7 +34,13 @@ def index():
 def choose_hero():
     if request.method == 'GET':
         return render_choose_personage_template(header='Выберите героя', next_button='Выбрать врага')
-    ...
+
+    heroes['player'] = Player(
+        class_=personage_classes[request.form['unit_class']],
+        weapon=EQUIPMENT.get_weapon(request.form['weapon']),
+        armor=EQUIPMENT.get_armor(request.form['armor']),
+        name=request.form['name']
+    )
     return redirect(url_for('choose_enemy'))
 
 
@@ -36,7 +48,20 @@ def choose_hero():
 def choose_enemy():
     if request.method == 'GET':
         return render_choose_personage_template(header='Выберите врага', next_button='Начать сражение')
-    ...
+
+    heroes['enemy'] = Enemy(
+        class_=personage_classes[request.form['unit_class']],
+        weapon=EQUIPMENT.get_weapon(request.form['weapon']),
+        armor=EQUIPMENT.get_armor(request.form['armor']),
+        name=request.form['name']
+    )
     return '<h2>Not Implemented</h2>'
+
+
+@app.route('/fight')
+def start_fight():
+    if 'player' in heroes and 'enemy' in heroes:
+        return render_template('fight.html', heroes=heroes, results="Fight!")
+    return redirect(url_for('index'))
 
 
